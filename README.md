@@ -170,12 +170,12 @@ print(greet("John"))
 
 **What the code does**
 
-This code defines a function named `greet` that accepts a parameter called `name` and returns a greeting message. The function is then called with the value `"Jewel"` and the result is printed.
+This code defines a function named `greet` that accepts a parameter called `name` and returns a greeting message. The function is then called with the value `"John"` and the result is printed.
 
 **Step-by-step working**
 
 1. The function `greet()` is created.
-2. The parameter `name` receives the value `"Jewel"`.
+2. The parameter `name` receives the value `"John"`.
 3. A formatted greeting string is generated.
 4. The function returns the greeting.
 5. The greeting is printed to the console.
