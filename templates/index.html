@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explain My Code</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      background: #080b12;
+      color: #e8edf7;
+      font-family: "Aptos", "Segoe UI", sans-serif;
+    }
+
+    .app-shell {
+      min-height: 100%;
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(0, 229, 255, 0.18), transparent 34%),
+        radial-gradient(circle at 85% 18%, rgba(124, 92, 255, 0.18), transparent 30%),
+        linear-gradient(135deg, #080b12 0%, #101624 54%, #080b12 100%);
+      position: relative;
+    }
+
+    .glass-nav {
+      background: rgba(8, 11, 18, 0.72);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #00e5ff, #7c5cff);
+      color: #071018;
+      box-shadow: 0 0 28px rgba(0, 229, 255, 0.22);
+    }
+
+    .hero-kicker {
+      color: #00e5ff;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .hero-title {
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-subtitle {
+      color: rgba(232, 237, 247, 0.72);
+      max-width: 760px;
+    }
+
+    .workspace-card {
+      background: rgba(18, 25, 40, 0.78);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.34);
+      border-radius: 28px;
+      backdrop-filter: blur(18px);
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+
+    .card-label {
+      color: rgba(232, 237, 247, 0.72);
+      font-size: 0.88rem;
+    }
+
+    .code-textarea {
+      min-height: 430px;
+      height: 250px;
+      resize: vertical;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      color: #d8f8ff;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.045) 0 3.1rem, transparent 3.1rem),
+        linear-gradient(#0b1020, #0b1020);
+      font-family: "Cascadia Code", "Fira Code", Consolas, monospace;
+      line-height: 1.65;
+      tab-size: 2;
+      padding: 1.15rem 1.15rem 1.15rem 4.2rem;
+    }
+
+    .primary-btn {
+      min-height: 48px;
+      border: 0;
+      border-radius: 16px;
+      color: #071018;
+      font-weight: 800;
+      background: linear-gradient(135deg, #00e5ff, #7c5cff);
+    }
+
+    .secondary-btn {
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      color: #e8edf7;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .output-panel {
+      min-height: 430px;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        #0b1020;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .empty-state {
+      min-height: 430px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 2rem;
+      color: rgba(232, 237, 247, 0.62);
+    }
+
+    .empty-icon {
+      width: 72px;
+      height: 72px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 24px;
+      background: rgba(0, 229, 255, 0.09);
+      color: #00e5ff;
+      margin-bottom: 1.1rem;
+    }
+
+    .explanation-content {
+      padding: 1.35rem;
+    }
+
+    .explanation-block {
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .explanation-block h3 {
+      font-size: 1rem;
+      color: #00e5ff;
+      margin-bottom: 0.55rem;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(8, 11, 18, 0.7);
+      backdrop-filter: blur(10px);
+      z-index: 5;
+    }
+
+    .spinner-border {
+      color: #00e5ff;
+    }
+
+    .d-flex {
+      display: flex !important;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark glass-nav sticky-top">
+      <div class="container py-2">
+
+        <a class="navbar-brand d-flex align-items-center gap-3 fw-bold" href="#">
+
+          <span class="brand-mark">
+            <i class="bi bi-braces-asterisk"></i>
+          </span>
+
+          <span>Explain My Code</span>
+
+        </a>
+
+      </div>
+    </nav>
+  </header>
+
+  <main class="position-relative">
+
+    <section class="container py-5">
+
+      <div class="row align-items-end g-4 mb-4">
+
+        <div class="col-lg-8">
+
+          <div class="hero-kicker mb-3">
+            AI coding assistant
+          </div>
+
+          <h1 class="hero-title display-4 fw-black mb-3">
+            Understand code faster
+          </h1>
+
+          <p class="hero-subtitle fs-5 mb-0">
+            Paste your code, choose a language, and get a clear AI-style explanation.
+          </p>
+
+        </div>
+
+      </div>
+
+      <form id="explainForm" class="row g-4" action="/explain-code" method="POST">
+
+        <section class="col-lg-6">
+
+          <div class="workspace-card p-3 p-md-4 h-100">
+
+            <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+
+              <div>
+                <h2 class="h4 fw-bold mb-1">Paste your code</h2>
+                <p class="card-label mb-0">
+                  Use the editor below to add a snippet.
+                </p>
+              </div>
+
+              <span class="brand-mark flex-shrink-0">
+                <i class="bi bi-code-slash"></i>
+              </span>
+
+            </div>
+
+            <div class="mb-3">
+
+              <label for="languageSelect" class="form-label card-label">
+                Programming language
+              </label>
+
+              <select id="languageSelect" name="language" class="form-select bg-dark text-light border-0">
+
+                <option value="JavaScript">JavaScript</option>
+                <option value="Java">Java</option>
+                <option value="Python">Python</option>
+                <option value="C#">C#</option>
+                <option value="C++">C++</option>
+                <option value="C">C</option>
+                <option value="PHP">PHP</option>
+                <option value="Go">Go</option>
+                <option value="Ruby">Ruby</option>
+                <option value="TypeScript">TypeScript</option>
+                <option value="Swift">Swift</option>
+                <option value="Kotlin">Kotlin</option>
+                <option value="Rust">Rust</option>
+                <option value="Dart">Dart</option>
+
+              </select>
+
+            </div>
+
+            <div class="mb-3">
+
+              <label for="codeInput" class="form-label card-label">
+                Code
+              </label>
+
+              {% if code %}
+              <textarea
+                id="codeInput"
+                name="code"
+                class="form-control code-textarea text-light"
+                spellcheck="false"
+                placeholder="Paste your code here..."
+              >{{code}}</textarea>
+
+              {% else %}
+              <textarea
+                id="codeInput"
+                name="code"
+                class="form-control code-textarea text-light"
+                spellcheck="false"
+                placeholder="Paste your code here..."
+              ></textarea>
+              {% endif %}
+
+            </div>
+
+            <button class="btn primary-btn w-100" type="submit">
+
+              <span class="d-inline-flex align-items-center justify-content-center gap-2">
+
+                <i class="bi bi-stars"></i>
+
+                <span>
+                  Explain Code
+                </span>
+
+              </span>
+
+            </button>
+
+          </div>
+
+        </section>
+
+        <section class="col-lg-6">
+
+          <div class="workspace-card p-3 p-md-4 h-100">
+
+            <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+
+              <div>
+                <h2 class="h4 fw-bold mb-1">
+                  Explanation
+                </h2>
+
+                <p class="card-label mb-0">
+                  AI generated explanation
+                </p>
+              </div>
+
+            </div>
+
+            <div class="output-panel">
+
+              <div id="loadingIndicator" class="loading-overlay">
+
+                <div class="text-center">
+
+                  <div class="spinner-border mb-3"></div>
+
+                  <div class="fw-bold">
+                    Analyzing your code...
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div id="explanationResult">
+
+                {% if explanation %}
+
+                <div class="explanation-content">
+
+                  <div class="explanation-block">
+
+                    <h3>
+                      <i class="bi bi-stars"></i>
+                      AI Explanation
+                    </h3>
+
+                    <p style="white-space: pre-wrap;">{{ explanation }}</p>
+
+                  </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+
+                  <div>
+
+                    <div class="empty-icon mx-auto">
+                      <i class="bi bi-chat-square-text fs-2"></i>
+                    </div>
+
+                    <h3 class="h5 fw-bold">
+                      Ready when you are
+                    </h3>
+
+                    <p class="mb-0">
+                      Your explanation will appear here.
+                    </p>
+
+                  </div>
+
+                </div>
+
+                {% endif %}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </form>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script>
+
+const form = document.getElementById("explainForm");
+const loading = document.getElementById("loadingIndicator");
+
+form.addEventListener("submit", () => {
+    loading.classList.add("d-flex");
+});
+
+window.addEventListener("load", () => {
+    loading.classList.remove("d-flex");
+});
+
+</script>
+
+</body>
+</html>
