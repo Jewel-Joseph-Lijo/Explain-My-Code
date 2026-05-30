@@ -233,10 +233,9 @@ This code defines a function named `greet` that accepts a parameter called `name
 
 ---
 
-### Example Markdown Screenshot Embedding
-
-
-
+### Screenshots
+<img width="1895" height="820" alt="Screenshot 2026-05-30 154109" src="https://github.com/user-attachments/assets/be293e6d-a247-4579-a805-78435d5fffa4" />
+<img width="1894" height="822" alt="Screenshot 2026-05-30 154144" src="https://github.com/user-attachments/assets/b8247bfb-867f-4894-beca-f8ca6adcf591" />
 
 ---
 
